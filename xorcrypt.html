@@ -1,0 +1,53 @@
+<meta charset=UTF-8><meta name=viewport content="width=device-width,shrink-to-fit=no,initial-scale=1">
+<h2>Xor Crypt</h2>
+<hr>
+<h3>Конвертор (base64)</h3>
+Текст: <input type="text" autocomplete="off" id="input_text" oninput = "to_base64()"> base64: <span id="result_base64"></span>
+<br>
+<br>
+base64: <input type="text" autocomplete="off" id="input_base64" oninput = "to_text()"> Текст: <span id="result_text"></span>
+<hr>
+<h3>Зашифровать XOR</h3>
+Текст: <input type="text" autocomplete="off" id="input_xor_text" oninput = "encrypt_xor()"> Ключ: <input type="text" autocomplete="off" id="input_xor_key_text" oninput = "encrypt_xor()">  <span id="length_key">0</span>
+<br>
+<br>
+Шифротекст в base64: <span id="result_xor_base64"></span>
+<hr>
+<h3>Расшифровать XOR</h3>
+Шифротекст в base64: <input type="text" autocomplete="off" id="input_xor_base64" oninput = "decrypt_xor()"> Ключ: <input type="text" autocomplete="off" id="input_xor_key_base64" oninput = "decrypt_xor()">
+<br>
+<br>
+Текст: <span id="result_xor_text"></span>
+<script>
+	function utf8_to_b64(str) {
+		return window.btoa(unescape(encodeURIComponent(str)));
+	}
+
+	function b64_to_utf8(str) {
+		return decodeURIComponent(escape(window.atob(str)));
+	}
+
+	function to_base64() {
+	document.getElementById('result_base64').innerHTML = utf8_to_b64(document.getElementById('input_text').value);
+		}
+	function to_text() {
+	document.getElementById('result_text').innerHTML = b64_to_utf8(document.getElementById('input_base64').value);
+		}
+	function xor(text, key) {
+    return Array.from(text, (c, i) => String.fromCharCode(c.charCodeAt() ^ key.charCodeAt(i % key.length))).join('');
+	}
+	function encrypt_xor() {
+	var text = document.getElementById('input_xor_text').value;
+	var key = document.getElementById('input_xor_key_text').value;
+	document.getElementById('length_key').innerHTML = key.length;
+	document.getElementById("input_xor_key_text").maxLength = text.length;
+	if((key.length == text.length || key.length > text.length) && key.length > 0 ) document.getElementById('length_key').innerHTML = "Длинна ключа верная";
+	document.getElementById('result_xor_base64').innerHTML = utf8_to_b64(xor(text, key));
+	}
+	function decrypt_xor() {
+	var text = b64_to_utf8(document.getElementById('input_xor_base64').value);
+	var key = document.getElementById('input_xor_key_base64').value;
+	document.getElementById('result_xor_text').innerHTML = xor(text, key);
+	}
+</script>
+
